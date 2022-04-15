@@ -6,8 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-        sudo apt-get update
-        sudo apt-get install -y qemu-user-static
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
       - uses: redhat-actions/buildah-build@main
         with:
           images: multiarch
