@@ -10,7 +10,8 @@ jobs:
           sudo apt-get install -y qemu-user-static
       - uses: redhat-actions/buildah-build@main
         with:
-          images: multiarch
+          image: multiarch
+          tags: latest
           archs: amd64, arm64
           containerfiles: |
             ./Containerfile
