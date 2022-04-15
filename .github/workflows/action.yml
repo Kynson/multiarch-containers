@@ -1,0 +1,18 @@
+on: workflow_dispatch
+name: Build & Test Multiarch Containers
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+        sudo apt-get update
+        sudo apt-get install -y qemu-user-static
+      - uses: redhat-actions/buildah-build@main
+        with:
+          images: multiarch
+          archs: amd64, arm64
+          containerfiles: |
+            ./Containerfile
+      # See if we have podman (temp)
+      - run: which podman
