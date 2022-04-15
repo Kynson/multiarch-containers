@@ -15,5 +15,9 @@ jobs:
           archs: amd64, arm64
           containerfiles: |
             ./Containerfile
-      # See if we have podman (temp)
-      - run: which podman
+      - run: |
+          echo "Running amd64 image"
+          podman run --rm --arch=amd64 multiarch:latest
+      - run: |
+          echo "Running arm64 image"
+          podman run --rm --arch=arm64 multiarch:latest
