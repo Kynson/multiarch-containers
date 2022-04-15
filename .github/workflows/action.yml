@@ -16,8 +16,11 @@ jobs:
           containerfiles: |
             ./Containerfile
       - run: |
+          echo "Built images: "
+          buildah images
+      - run: |
           echo "Running amd64 image"
-          podman run --rm --arch=amd64 multiarch:latest
+          podman run --rm multiarch:latest-amd64
       - run: |
           echo "Running arm64 image"
-          podman run --rm --arch=arm64 multiarch:latest
+          podman run --rm multiarch:latest-arm64
