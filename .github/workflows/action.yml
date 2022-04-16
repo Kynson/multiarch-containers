@@ -24,3 +24,5 @@ jobs:
       - run: |
           echo "Running arm64 image"
           podman run --rm multiarch:latest-arm64
+      # Get podman version as ref
+      - run: podman --version
