@@ -1,28 +1,36 @@
-on: workflow_dispatch
+on: [workflow_dispatch, push]
 name: Build & Test Multiarch Containers
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt-get update
-          sudo apt-get install -y qemu-user-static
-      - uses: redhat-actions/buildah-build@main
-        with:
-          image: multiarch
-          tags: latest
-          archs: amd64, arm64
-          containerfiles: |
-            ./Containerfile
-      - run: |
-          echo "Built images: "
-          buildah images
-      - run: |
-          echo "Running amd64 image"
-          podman run --rm multiarch:latest-amd64
-      - run: |
-          echo "Running arm64 image"
-          podman run --rm multiarch:latest-arm64
-      # Get podman version as ref
-      - run: podman --version
+    test:
+      runs-on: ubuntu-latest
+      if: ${{ !contains(github.event.head_commit.message, '[no ci]') }}
+      steps:
+        - uses: actions/checkout@v3
+        - uses: redhat-actions/buildah-build@main
+          with:
+            image: multiarch
+            tags: latest
+            containerfiles: |
+              ./Containerfile
+        - run: |
+            echo "Running image"
+            podman run --rm multiarch:latest
+    build:
+      runs-on: ubuntu-latest
+      if: ${{ !contains(github.event.head_commit.message, '[no ci]') }}
+      needs: test
+      steps:
+        - uses: actions/checkout@v3
+        - run: |
+            sudo apt-get update
+            sudo apt-get install -y qemu-user-static
+        - uses: redhat-actions/buildah-build@main
+          with:
+            image: multiarch
+            tags: latest
+            archs: amd64, arm64
+            containerfiles: |
+              ./Containerfile
+        - run: |
+            echo "Built images: "
+            buildah images
