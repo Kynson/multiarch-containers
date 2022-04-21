@@ -1,4 +1,9 @@
-on: [workflow_dispatch, push]
+on: 
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+
 name: Build & Test Multiarch Containers
 jobs:
     test:
@@ -34,3 +39,4 @@ jobs:
         - run: |
             echo "Built images: "
             buildah images
+        - run: echo ${{ github.ref_name }}
