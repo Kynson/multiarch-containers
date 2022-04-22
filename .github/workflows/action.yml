@@ -40,6 +40,6 @@ jobs:
           with:
             image: ${{ steps.build_image.outputs.image }}
             tags: latest
-            registry: ghcr.io/Kynson
+            registry: docker://ghcr.io/Kynson
             username: Kynson
             password: ${{ secrets.GITHUB_TOKEN }}
