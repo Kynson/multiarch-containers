@@ -8,7 +8,7 @@ name: Build & Test Multiarch Containers
 jobs:
     test:
       runs-on: ubuntu-latest
-      if: ${{ !contains(github.event.head_commit.message, '[no ci]') }}
+      #if: ${{ !contains(github.event.head_commit.message, '[no ci]') }}
       steps:
         - uses: actions/checkout@v3
         - uses: redhat-actions/buildah-build@main
@@ -22,7 +22,7 @@ jobs:
             podman run --rm multiarch:latest
     build:
       runs-on: ubuntu-latest
-      if: ${{ !contains(github.event.head_commit.message, '[no ci]') }}
+      #if: ${{ !contains(github.event.head_commit.message, '[no ci]') }}
       needs: test
       steps:
         - uses: actions/checkout@v3
@@ -32,11 +32,17 @@ jobs:
         - uses: redhat-actions/buildah-build@main
           with:
             image: multiarch
-            tags: latest
+            tags: latest ${{ github.ref_name }}
             archs: amd64, arm64
             containerfiles: |
               ./Containerfile
         - run: |
             echo "Built images: "
             buildah images
-        - run: echo ${{ github.ref_name }}
+        - uses: redhat-actions/push-to-registry@v2
+          with:
+            image: ${{ steps.build_image.outputs.image }}
+            tags: ${{ steps.build_image.outputs.tags }}
+            registry: ghcr.io/Kynson
+            username: Kynson
+            password: ${{ secrets.GITHUB_TOKEN }}
