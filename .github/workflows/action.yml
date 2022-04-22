@@ -1,4 +1,7 @@
-on: [workflow_dispatch, push]
+on: 
+  push:
+    tags:
+      - 'v*.*.*'
 
 name: Build & Test Multiarch Containers
 jobs:
@@ -29,7 +32,7 @@ jobs:
           id: build_image
           with:
             image: multiarch
-            tags: latest
+            tags: latest ${{ github.ref_name }}
             archs: amd64, arm64
             containerfiles: |
               ./Containerfile
@@ -39,7 +42,7 @@ jobs:
         - uses: redhat-actions/push-to-registry@v2
           with:
             image: ${{ steps.build_image.outputs.image }}
-            tags: latest
+            tags: latest ${{ github.ref_name }}
             registry: ghcr.io/kynson
             username: Kynson
             password: ${{ secrets.GITHUB_TOKEN }}
