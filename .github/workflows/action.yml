@@ -4,6 +4,10 @@ on:
       - 'v*.*.*'
 
 name: Build & Test Multiarch Containers
+
+permissions:
+  packages: write
+
 jobs:
     test:
       runs-on: ubuntu-latest
